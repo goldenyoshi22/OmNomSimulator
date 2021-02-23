@@ -37,7 +37,7 @@ init();
 game.percent = 0;
 
 function searchchecksinceautobuyerisstupid() {
-if (searchable) search();
+if (searchable) {searchable = false; search();}
 }
 
 function updateValues() {
@@ -167,6 +167,20 @@ if (num.gte("1e1000")) return (
 function switchNotation() {
 	if (game.notation == notationnames.length) game.notation = 1 
 	else game.notation += 1
+}
+
+function displayTime(d) {
+    d = Number(d);
+	var day = Math.floor(d / 86400)
+    var h = Math.floor(d % 86400 / 3600);
+    var m = Math.floor(d % 86400 % 3600 / 60);
+    var s = Math.floor(d % 86400 % 3600 % 60);
+    
+	var dDisplay = day > 0 ? day + (day == 1 ? " day, " : " days, ") : ""
+    var hDisplay = h > 0 ? h + (h == 1 ? " hour, " : " hours, ") : "";
+    var mDisplay = m > 0 ? m + (m == 1 ? " minute, " : " minutes, ") : "";
+    var sDisplay = s > 0 ? s + (s == 1 ? " second" : " seconds") : "";
+    return dDisplay + hDisplay + mDisplay + sDisplay; 
 }
 
 var app = new Vue({
