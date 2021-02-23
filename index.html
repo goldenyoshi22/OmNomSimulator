@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Om Nom Simulator v0.03</title>
+<link rel="stylesheet" href="style.css">
+
+<script src="js/libraries/jQuery.min.js"></script>
+<script src="js/libraries/notify.min.js"></script>
+<script src="js/libraries/OmegaNum.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+
+<script src="js/saving.js"></script>
+<script src="js/script.js" defer></script>
+
+</head>
+<body>
+<div id="vue">
+<button class="tabbtn" onclick="game.tab = 1" style="position:absolute;top:1%;left:-2%">Main</button>
+<button class="tabbtn" onclick="game.tab = 2" style="position:absolute;top:14%;left:-2%">Settings</button>
+<center><span v-if="game.tab == 1"><img src="omnom.png" alt="om nom image" style="width:150px;height:150px;"></img><br>
+You have {{ notation(game.candy) }} candy, making you {{ notation(ON.logBase(game.candy.plus(1), game.candylog).plus(1)) }}x more energetic<br>
+<button onclick="if (searchable) {searchable = false; search()}" class="tpborder" style="background-color:#40ff40;border:2px solid black;outline:none;">Search for candy</button>
+<div id="progress" class="btborder">
+<div id="bar" v-bind:style="'width:' + game.percent + '%;'" class="btborder">{{ game.percent }}%</div>
+</div></center>
+<span v-if="game.tab == 1" id="upgrades" style="float:right;">
+<center><button onclick="upgrade(0)" v-if="game.upgrades[0] == false" v-bind:style="'background-image: linear-gradient(rgb(239, 42, 11), rgb(255, 100, 0));border-color: rgb(255, 155, 0);width: 200px;height: 100px;font-size: 17px;display:' + (game.upgrades[0] ? 'none;' : 'inline;')"><h3 style="color:white;display:flex;display:table-cell;vertical-align:top;">Telekinesis</h2>More candy is found with automatic pulling powers</button>
+<br><span v-if="game.upgrades[0] == false" v-bind:style="'width:150px;color:white;background-color:black;display:' + (game.upgrades[0] ? 'none;' : 'inline;')" class="btborder">Cost: 10 candies​</span>
+<button onclick="upgrade(1)" v-if="game.upgrades[1] == false && game.upgrades[0] == true && game.candy.gte(10)" v-bind:style="'background-image: linear-gradient(rgb(239, 42, 11), rgb(255, 100, 0));border-color: rgb(255, 155, 0);width: 200px;height: 100px;font-size: 17px;display:' + (game.upgrades[1] ? 'none;' : 'inline;')"><h3 style="color:white;display:flex;display:table-cell;vertical-align:top;">Sugar Up</h2>Candy makes you more energetic (tech: log<sub>10</sub> &rarr; log<sub>7.5</sub>)</button>
+<br><span v-if="game.upgrades[1] == false && game.upgrades[0] == true && game.candy.gte(10)" v-bind:style="'width:150px;color:white;background-color:black;display:' + (game.upgrades[1] ? 'none;' : 'inline;')" class="btborder">Cost: 20 candies​</span>
+<button onclick="upgrade(2)" v-if="game.upgrades[2] == false && game.upgrades[0] == true && game.candy.gte(15)" v-bind:style="'background-image: linear-gradient(rgb(239, 42, 11), rgb(255, 100, 0));border-color: rgb(255, 155, 0);width: 200px;height: 100px;font-size: 17px;display:' + (game.upgrades[2] ? 'none;' : 'inline;')"><h3 style="color:white;display:flex;display:table-cell;vertical-align:top;">Time Travel</h2>Searching for candy is twice as fast</button>
+<br><span v-if="game.upgrades[2] == false && game.upgrades[0] == true && game.candy.gte(15)" v-bind:style="'width:150px;color:white;background-color:black;display:' + (game.upgrades[2] ? 'none;' : 'inline;')" class="btborder">Cost: 25 candies​</span>
+</center>
+<span style="position:absolute;bottom:0;color:white;font-size:25px;display:flex;display:table-cell;">Upgrades</span>
+</span></span>
+<span v-if="game.tab == 2">
+<center><table>
+<tr>
+<td><button class="tabbtn" onclick="document.getElementById('uaeifaefa').value = exportSave()">Export</button></td>
+<td><button class="tabbtn" onclick="importSave(document.getElementById('uaeifaefa').value)">Import</button></td>
+<td><button class="tabbtn" onclick="var a = confirm('Are you sure you want to do this? All of your progress will be lost, and there won\'t be any rewards.'); if (a == true) {wipeSave()}">Hard Reset</button></td>
+</tr>
+<tr>
+<td><button class="tabbtn" onclick="switchNotation()">Notation: {{ notationnames[game.notation-1] }}</button></td>
+<td><button class="tabbtn" onclick="game.eatsound = (game.eatsound == false)">Eating sound: {{ game.eatsound ? "On" : "Off" }}</button></td>
+<td><button class="tabbtn">Placeholder</button></td>
+</tr></table><input id="uaeifaefa" type="text" style="width:500px;height:50px;font-family:'omnom', arial;"></input></center>
+</span></div>
+</body>
+</html>
