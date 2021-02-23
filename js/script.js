@@ -40,7 +40,7 @@ var makethisnotabovehundredcheck = false
 var interval = setInterval(function() {
 if (searchtime > 0) {
 searchtime-=0.05;
-if (game.candygain.gte(2) && makethisnotabovehundredcheck == true) game.candy = toFixed(game.candy.plus(ON.div(1, game.candygain).div(20).div(ON.div(5, game.time))), 2)
+if (game.candygain.gte(2) && makethisnotabovehundredcheck == true) game.candy = toFixed(game.candy.plus(ON.div(1, game.candygain).div(20).div(ON.div(1, game.time))), 2)
 if (makethisnotabovehundredcheck == false) {makethisnotabovehundredcheck = true}
 else {game.percent = parseFloat((parseFloat(game.percent) + parseFloat((1/(game.time/5)).toFixed(2))).toFixed(2));}
 } else {
