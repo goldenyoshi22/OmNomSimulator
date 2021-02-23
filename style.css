@@ -63,4 +63,11 @@ font-size: 25px;
 width: 180px;
 height: 75px;
 background-color: #a0ffa0;
+border-radius: 10px;
+}
+
+.autobtn {
+border-color:#a0a0a0;
+color:#a0a0a0;
+background-color:#808080;
 }
