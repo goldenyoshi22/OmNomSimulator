@@ -64,6 +64,7 @@ width: 180px;
 height: 75px;
 background-color: #a0ffa0;
 border-radius: 10px;
+outline:none;
 }
 
 .autobtn {

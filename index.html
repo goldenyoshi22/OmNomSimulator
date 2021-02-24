@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
       <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Om Nom Simulator v0.04</title>
+<title>Om Nom Simulator v0.041</title>
 <link rel="stylesheet" href="style.css">
 
 <script src="js/libraries/jQuery.min.js"></script>
@@ -25,21 +25,27 @@
 <center><span v-if="game.tab == 1"><img src="omnom.png" alt="om nom image" style="width:150px;height:150px;"></img><br>
 You have {{ notation(game.candy) }} candy, making you {{ notation(ON.logBase(game.candy.plus(1), game.candylog).plus(1)) }}x more energetic<br>
 <button id="searchbutton" onclick="if (searchable) {searchable = false; search()}" class="tpborder" style="background-color:#40ff40;border:2px solid black;outline:none;">Search for candy</button>
-<div id="progress" class="btborder">
-<div id="bar" v-bind:style="'width:' + game.percent + '%;'" class="btborder">{{ game.percent }}%</div>
+<div id="progress" v-bind:style="'width:' + (game.upgrades[4] ? '5.4375%' : '7.25%')" class="btborder">
+<div id="bar" v-bind:style="'width:' + game.percent * (game.upgrades[4] ? 1.25 : 1) + '%;'" class="btborder">{{ game.percent }}%</div>
 </div></center>
 <span v-if="game.tab == 1" id="upgrades" style="float:right;">
-<center><span v-if="game.upgrades[0] == false"><button onclick="upgrade(0)" v-bind:style="'background-image: linear-gradient(rgb(239, 42, 11), rgb(255, 100, 0));border-color: rgb(255, 155, 0);width: 200px;height: 100px;font-size: 17px;display:' + (game.upgrades[0] ? 'none;' : 'inline;')"><h3 style="color:white;display:flex;display:table-cell;vertical-align:top;">Telekinesis</h2>More candy is found with automatic pulling powers</button>
+<center><span v-if="game.upgrades[0] == false"><button onclick="upgrade(0, (game.candygain = ON(5)))" v-bind:style="'background-image: linear-gradient(rgb(239, 42, 11), rgb(255, 100, 0));border-color: rgb(255, 155, 0);width: 200px;height: 100px;font-size: 17px;display:' + (game.upgrades[0] ? 'none;' : 'inline;')"><h3 style="color:white;display:flex;display:table-cell;vertical-align:top;">Telekinesis</h2>More candy is found with automatic pulling powers</button>
 <br><span v-bind:style="'width:150px;color:white;background-color:black;display:' + (game.upgrades[0] ? 'none;' : 'inline;')" class="btborder">Cost: 10 candies​</span>
-</span><span v-if="game.upgrades[1] == false && game.upgrades[0] == true && game.candy.gte(10)"><button onclick="upgrade(1)" v-bind:style="'background-image: linear-gradient(rgb(239, 42, 11), rgb(255, 100, 0));border-color: rgb(255, 155, 0);width: 200px;height: 100px;font-size: 17px;display:' + (game.upgrades[1] ? 'none;' : 'inline;')"><h3 style="color:white;display:flex;display:table-cell;vertical-align:top;">Sugar Up</h2>Candy makes you more energetic (tech: log<sub>10</sub> &rarr; log<sub>7.5</sub>)</button>
+</span><span v-if="game.upgrades[1] == false && game.upgrades[0] == true && game.candy.gte(10)"><button onclick="upgrade(1, (game.candylog = ON(7.5)))" v-bind:style="'background-image: linear-gradient(rgb(239, 42, 11), rgb(255, 100, 0));border-color: rgb(255, 155, 0);width: 200px;height: 100px;font-size: 17px;display:' + (game.upgrades[1] ? 'none;' : 'inline;')"><h3 style="color:white;display:flex;display:table-cell;vertical-align:top;">Sugar Up</h2>Candy makes you more energetic (tech: log<sub>10</sub> &rarr; log<sub>7.5</sub>)</button>
 <br><span v-bind:style="'width:150px;color:white;background-color:black;display:' + (game.upgrades[1] ? 'none;' : 'inline;')" class="btborder">Cost: 20 candies​</span>
-</span><span v-if="game.upgrades[2] == false && game.upgrades[0] == true && game.candy.gte(15)"><button onclick="upgrade(2)" v-bind:style="'background-image: linear-gradient(rgb(239, 42, 11), rgb(255, 100, 0));border-color: rgb(255, 155, 0);width: 200px;height: 100px;font-size: 17px;display:' + (game.upgrades[2] ? 'none;' : 'inline;')"><h3 style="color:white;display:flex;display:table-cell;vertical-align:top;">Time Travel</h2>Searching for candy is twice as fast</button>
+</span><span v-if="game.upgrades[2] == false && game.upgrades[0] == true && game.candy.gte(15)"><button onclick="upgrade(2, (game.timebonus = 2))" v-bind:style="'background-image: linear-gradient(rgb(239, 42, 11), rgb(255, 100, 0));border-color: rgb(255, 155, 0);width: 200px;height: 100px;font-size: 17px;display:' + (game.upgrades[2] ? 'none;' : 'inline;')"><h3 style="color:white;display:flex;display:table-cell;vertical-align:top;">Time Travel</h2>Searching for candy is twice as fast</button>
 <br><span v-bind:style="'width:150px;color:white;background-color:black;display:' + (game.upgrades[2] ? 'none;' : 'inline;')" class="btborder">Cost: 25 candies​</span>
 </span><span v-if="game.upgrades[3] == false && game.upgrades[2] == true && game.upgrades[1] == true && game.candy.gte(25)"><button onclick="upgrade(3)" v-bind:style="'background-image: linear-gradient(rgb(239, 42, 11), rgb(255, 100, 0));border-color: rgb(255, 155, 0);width: 200px;height: 100px;font-size: 17px;display:' + (game.upgrades[3] ? 'none;' : 'inline;')"><h3 style="color:white;display:flex;display:table-cell;vertical-align:top;">Candifactory</h2>Unlock Automation</button>
 <br><span v-bind:style="'width:150px;color:white;background-color:black;display:' + (game.upgrades[3] ? 'none;' : 'inline;')" class="btborder">Cost: 42 candies​</span>
+</span><span v-if="game.upgrades[4] == false && game.upgrades[3] == true && game.candy.gte(25)"><button onclick="upgrade(4)" v-bind:style="'background-image: linear-gradient(rgb(239, 42, 11), rgb(255, 100, 0));border-color: rgb(255, 155, 0);width: 200px;height: 100px;font-size: 17px;display:' + (game.upgrades[4] ? 'none;' : 'inline;')"><h3 style="color:white;display:flex;display:table-cell;vertical-align:top;">Shrunken World</h2>The bar of searching is shortened to 75% of its original state</button>
+<br><span v-bind:style="'width:150px;color:white;background-color:black;display:' + (game.upgrades[4] ? 'none;' : 'inline;')" class="btborder">Cost: 77 candies​</span>
+</span><span v-if="game.upgrades[5] == false && game.upgrades[3] == true && game.candy.gte(33)"><button onclick="upgrade(5, (game.candylog = ON(4)))" v-bind:style="'background-image: linear-gradient(rgb(239, 42, 11), rgb(255, 100, 0));border-color: rgb(255, 155, 0);width: 200px;height: 100px;font-size: 17px;display:' + (game.upgrades[5] ? 'none;' : 'inline;')"><h3 style="color:white;display:flex;display:table-cell;vertical-align:top;">Cofficandy</h2>Candy somehow has caffine in it (tech: log<sub>7.5</sub> &rarr; log<sub>4<sub>)</button>
+<br><span v-bind:style="'width:150px;color:white;background-color:black;display:' + (game.upgrades[5] ? 'none;' : 'inline;')" class="btborder">Cost: 100 candies​</span>
+</span><span v-if="game.upgrades[6] == false && game.upgrades[3] == true && game.candy.gte(42)"><button onclick="upgrade(6, (game.candygain = ON(25)))" v-bind:style="'background-image: linear-gradient(rgb(239, 42, 11), rgb(255, 100, 0));border-color: rgb(255, 155, 0);width: 200px;height: 100px;font-size: 17px;display:' + (game.upgrades[6] ? 'none;' : 'inline;')"><h3 style="color:white;display:flex;display:table-cell;vertical-align:top;">Glowing Eyes</h2>Even more candy is found with flashlight vision</button>
+<br><span v-bind:style="'width:150px;color:white;background-color:black;display:' + (game.upgrades[6] ? 'none;' : 'inline;')" class="btborder">Cost: 123 candies​</span>
 </center>
 <span style="position:absolute;bottom:0;color:white;font-size:25px;display:flex;display:table-cell;">Upgrades</span>
-</span></span>
+</span></span></span>
 <span v-if="game.tab == 2">
 <center><table>
 <tr>
@@ -54,6 +60,6 @@ You have {{ notation(game.candy) }} candy, making you {{ notation(ON.logBase(gam
 </tr></table><input id="uaeifaefa" type="text" style="width:500px;height:50px;font-family:'omnom', arial;"></input></center>
 </span>
 <span v-if="game.tab == 3">
-<center><span id="autothingy" style="width:500px:height:500px;"><button style="width:200px:height:125px;" onclick="buyAutobuyer()"><h2>Auto-searcher</h2>Level: {{ notation(game.autoclickLevel) }} | Interval: {{ game.autoclick.enabled ? notation(ON.mul(game.autoclick.interval, 50)) : '&infin;' }}ms<p></p>Buy for {{ notation(game.autocost) }} candy</span></center></span></div>
+<center><span id="autothingy" style="width:500px:height:500px;"><button style="width:200px:height:125px;" onclick="buyAutobuyer()"><h2>Auto-searcher</h2>Level: {{ notation(game.autoclickLevel) + (game.autoclickLevel.gte(11) ? " (MAX)" : "") }} | Interval: {{ game.autoclick.enabled ? notation(ON.mul(game.autoclick.interval, 50)) : '&infin;' }}ms<p></p>Buy for {{ game.autoclickLevel.gte(11) ? "&infin;" : notation(game.autocost) }} candy</span></center></span></div>
 </body>
 </html>

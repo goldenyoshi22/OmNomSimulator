@@ -5,8 +5,8 @@ var game = {
 candy: ON(0),
 candygain: ON(1),
 candylog: ON(10),
-upgradecosts: [ON(10), ON(20), ON(25), ON(42)],
-upgrades: [false, false, false, false],
+upgradecosts: [ON(10), ON(20), ON(25), ON(42), ON(77), ON(100), ON(123), ON(150), ON(177), ON(200)],
+upgrades: [false, false, false, false, false, false, false, false, false, false],
 time: 5,
 timebonus: 1,
 percent: 0,
@@ -16,6 +16,8 @@ notation: 1,
 autoclick: new Autobuyer(searchchecksinceautobuyerisstupid, (40*1.33333333333333), ON(1)),
 autoclickLevel: ON(0),
 autocost: ON(20),
+currentTime: Date.now(),
+showthing: true
 }
 
 var notationnames = ["Scientific", "Logarithm"]
@@ -24,10 +26,10 @@ var searchable = true
 function init() {
 setInterval(save, 2222)
 load();
-$.notify('It is recommended to play this in 100% size, check this by pressing ctrl++ and ctrl+-. I don\'t know how it works on mobile though.', 'info');
+if (game.showthing == true) {$.notify('It is recommended to play this in 100% size, check this by pressing ctrl++ and ctrl+-. I don\'t know how it works on mobile though.', 'info'); game.showthing = false;}
 percent = 0	
 //setInterval(updateValues, 200)
-//setInterval(update, 50)
+setInterval(update, 50)
 updateAuto()
 activateAutobuyer(game.autoclick)
 }
@@ -38,6 +40,14 @@ game.percent = 0;
 
 function searchchecksinceautobuyerisstupid() {
 if (searchable) {searchable = false; search();}
+}
+
+function update() {
+if (Date.now() - game.currentTime >= 10000)  {
+$.notify(`While you were offline / offwindowed, Om Nom found ${notation(ON.div((Date.now() - game.currentTime), 20000).mul(game.candygain.div(2).ceil()).mul(game.autoclickLevel.plus(1)))} candy. (Offline time: ${displayTime(Math.floor(((Date.now() - game.currentTime) / 1000)))})`, 'info');
+game.candy = game.candy.plus(toFixed(ON.div((Date.now() - game.currentTime), 20000).mul(game.candygain.div(2).ceil()).mul(game.autoclickLevel.plus(1))), 2)
+}
+game.currentTime = Date.now()
 }
 
 function updateValues() {
@@ -68,15 +78,15 @@ var searchtime = game.time
 var makethisnotabovehundredcheck = false
 var interval = setInterval(function() {
 if (searchtime > 0) {
-searchtime-=0.05;
-if (game.candygain.gte(2) && makethisnotabovehundredcheck == true) game.candy = toFixed(game.candy.plus(ON.div(1, game.candygain).div(20).div(ON(1).div(ON.logBase(game.candy.plus(1), game.candylog).plus(1)))), 2)
+searchtime-= (game.upgrades[4] ? 0.066666666666 : 0.05);
+if (game.candygain.gte(2) && (makethisnotabovehundredcheck || game.upgrades[4])) game.candy = toFixed(game.candy.plus(ON.div(1, game.candygain).div(20).div(ON(1).div(ON.logBase(game.candy.plus(1), game.candylog).plus(1)))), 2)
 if (makethisnotabovehundredcheck == false) {makethisnotabovehundredcheck = true}
 else {game.percent = parseFloat((parseFloat(game.percent) + parseFloat((1/(game.time/5)).toFixed(2))).toFixed(2));}
 } else {
 clearInterval(interval);
 searchable = true;
 game.percent = 0;
-if (game.eatsound) eat.play()
+if (game.eatsound && game.time > 2) eat.play()
 game.candy = game.candy.plus(1)
 if (game.time > 2) $.notify('Candy has been found.', 'success')
 }
@@ -87,44 +97,15 @@ function toFixed(num, dec = 2) {
 	return ON.round(num.times(ON.pow(10, dec))).div(ON.pow(10, dec));
 }
 
-function upgrade(n) {
-switch (n) {
-case 0: {
-if (game.candy.gte(game.upgradecosts[0]) && game.upgrades[0] == false) {
-	game.candy = game.candy.minus(game.upgradecosts[0]);
-	game.upgrades[0] = true;
-	game.candygain = ON(5)
+
+
+function upgrade(n, func = (console.log('bruh'))) {
+if (game.candy.gte(game.upgradecosts[n]) && game.upgrades[n] == false) {
+	game.candy = game.candy.minus(game.upgradecosts[n]);
+	game.upgrades[n] = true;
+	() => func;
 	$.notify('Upgrade bought.', 'success')
-} else {$.notify('Not enough candy!', 'error')}
-break;
-}
-case 1: {
-if (game.candy.gte(game.upgradecosts[1]) && game.upgrades[1] == false) {
-	game.candy = game.candy.minus(game.upgradecosts[1]);
-	game.upgrades[1] = true;
-	game.candylog = ON(7.5)
-	$.notify('Upgrade bought.', 'success')
-} else {$.notify('Not enough candy!', 'error')}
-break;
-}
-case 2: {
-if (game.candy.gte(game.upgradecosts[2]) && game.upgrades[2] == false) {
-	game.candy = game.candy.minus(game.upgradecosts[2]);
-	game.upgrades[2] = true;
-	game.timebonus = 2;
-	$.notify('Upgrade bought.', 'success')
-} else {$.notify('Not enough candy!', 'error')}
-break;
-}
-case 3: {
-if (game.candy.gte(game.upgradecosts[3]) && game.upgrades[3] == false) {
-	game.candy = game.candy.minus(game.upgradecosts[3]);
-	game.upgrades[3] = true;
-	$.notify('Upgrade bought.', 'success')
-} else {$.notify('Not enough candy!', 'error')}
-break;
-}
-}
+} else $.notify('Not enough candy!', 'error')
 }
 
 function notation(num, not = game.notation) {
