@@ -56,7 +56,7 @@ You have {{ notation(game.candy) }} candy, making you {{ notation(ON.logBase(gam
 <tr>
 <td><button class="tabbtn" onclick="switchNotation()">Notation: {{ notationnames[game.notation-1] }}</button></td>
 <td><button class="tabbtn" onclick="game.eatsound = (game.eatsound == false)">Eating sound: {{ game.eatsound ? "On" : "Off" }}</button></td>
-<td><button class="tabbtn">Placeholder</button></td>
+<td><button class="tabbtn" onclick="game.offlineprog = (game.offlineprog == false)">Offline progress: {{ game.offlineprog ? "On" : "Off" }}</button></td>
 </tr></table><input id="uaeifaefa" type="text" style="width:500px;height:50px;font-family:'omnom', arial;"></input></center>
 </span>
 <span v-if="game.tab == 3">

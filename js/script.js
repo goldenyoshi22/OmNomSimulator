@@ -12,6 +12,7 @@ timebonus: 1,
 percent: 0,
 tab: 1,
 eatsound: true,
+offlineprog: true,
 notation: 1,
 autoclick: new Autobuyer(searchchecksinceautobuyerisstupid, (40*1.33333333333333), ON(1)),
 autoclickLevel: ON(0),
@@ -43,7 +44,7 @@ if (searchable) {searchable = false; search();}
 }
 
 function update() {
-if (Date.now() - game.currentTime >= 10000)  {
+if ((Date.now() - game.currentTime >= 10000) && game.offlineprog)  {
 $.notify(`While you were offline / offwindowed, Om Nom found ${notation(ON.div((Date.now() - game.currentTime), 20000).mul(game.candygain.div(2).ceil()).mul(game.autoclickLevel.plus(1)))} candy. (Offline time: ${displayTime(Math.floor(((Date.now() - game.currentTime) / 1000)))})`, 'info');
 game.candy = game.candy.plus(toFixed(ON.div((Date.now() - game.currentTime), 20000).mul(game.candygain.div(2).ceil()).mul(game.autoclickLevel.plus(1))), 2)
 }
